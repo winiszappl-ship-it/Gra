@@ -1,0 +1,15 @@
+{
+  "name": "NEON FLUX",
+  "short_name": "NEON FLUX",
+  "description": "Endless gravity runner — przełączaj grawitację, buduj combo, bij rekordy.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#05060f",
+  "theme_color": "#05060f",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>NEON FLUX — endless gravity runner</title>
+<meta name="description" content="NEON FLUX to darmowa, szybka gra przeglądarkowa: przełączaj grawitację, zbieraj orby, buduj combo i bij rekordy. Gra się myszką, klawiaturą i dotykiem.">
+<meta name="theme-color" content="#05060f">
+<meta property="og:title" content="NEON FLUX">
+<meta property="og:description" content="Przełączaj grawitację. Buduj combo. Bij rekord.">
+<meta property="og:type" content="website">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game" aria-label="Plansza gry"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hud hidden">
+    <div class="hud-row">
+      <div class="hud-box">
+        <span class="hud-label">DYSTANS</span>
+        <span class="hud-val" id="hudDist">0<i>m</i></span>
+      </div>
+      <div class="hud-box hud-center">
+        <span class="hud-label">WYNIK</span>
+        <span class="hud-val big" id="hudScore">0</span>
+      </div>
+      <div class="hud-box hud-right">
+        <span class="hud-label">ORBY</span>
+        <span class="hud-val" id="hudOrbs">0</span>
+      </div>
+    </div>
+    <div id="comboWrap" class="combo-wrap">
+      <div class="combo-text">COMBO <b id="comboVal">x1</b></div>
+      <div class="combo-bar"><i id="comboFill"></i></div>
+    </div>
+    <div id="powerRow" class="power-row"></div>
+    <button id="pauseBtn" class="icon-btn" aria-label="Pauza">II</button>
+  </div>
+
+  <!-- MENU -->
+  <div id="menu" class="screen">
+    <div class="logo">
+      <h1>NEON<span>FLUX</span></h1>
+      <p class="tag">Przełączaj grawitację. Buduj combo. Nie zderz się.</p>
+    </div>
+    <div class="stat-strip">
+      <div><span id="mBest">0</span><small>REKORD</small></div>
+      <div><span id="mCoins">0</span><small>MONETY</small></div>
+      <div><span id="mStreak">0</span><small>SERIA DNI</small></div>
+    </div>
+    <button class="btn primary" id="playBtn">GRAJ</button>
+    <div class="btn-row">
+      <button class="btn" id="shopBtn">SKLEP</button>
+      <button class="btn" id="missionsBtn">ZADANIA<i id="missionDot" class="dot hidden"></i></button>
+      <button class="btn" id="statsBtn">STATY</button>
+    </div>
+    <div class="btn-row small">
+      <button class="btn ghost" id="soundBtn">DŹWIĘK: ON</button>
+      <button class="btn ghost" id="musicBtn">MUZYKA: ON</button>
+      <button class="btn ghost" id="howBtn">JAK GRAĆ</button>
+    </div>
+    <p class="hint">SPACJA / KLIK / DOTYK — zmiana grawitacji</p>
+  </div>
+
+  <!-- GAME OVER -->
+  <div id="gameover" class="screen hidden">
+    <h2 class="go-title">KONIEC</h2>
+    <div class="score-card">
+      <div class="score-main"><span id="goScore">0</span><small>WYNIK</small></div>
+      <div class="score-sub">
+        <div><b id="goDist">0m</b><small>dystans</small></div>
+        <div><b id="goOrbs">0</b><small>orby</small></div>
+        <div><b id="goCombo">x1</b><small>max combo</small></div>
+      </div>
+      <div class="coins-earned">+<span id="goCoins">0</span> monet</div>
+      <div id="goBest" class="new-best hidden">NOWY REKORD!</div>
+    </div>
+    <div id="goMissions" class="go-missions"></div>
+    <button class="btn primary" id="againBtn">JESZCZE RAZ</button>
+    <div class="btn-row">
+      <button class="btn" id="goShopBtn">SKLEP</button>
+      <button class="btn" id="goMenuBtn">MENU</button>
+      <button class="btn" id="shareBtn">UDOSTĘPNIJ</button>
+    </div>
+  </div>
+
+  <!-- PAUSE -->
+  <div id="pause" class="screen hidden">
+    <h2 class="go-title">PAUZA</h2>
+    <button class="btn primary" id="resumeBtn">WRÓĆ DO GRY</button>
+    <div class="btn-row">
+      <button class="btn" id="pauseRestart">OD NOWA</button>
+      <button class="btn" id="pauseMenu">MENU</button>
+    </div>
+  </div>
+
+  <!-- SHOP -->
+  <div id="shop" class="screen panel hidden">
+    <div class="panel-head">
+      <h2>SKLEP</h2>
+      <div class="coin-badge"><b id="shopCoins">0</b> monet</div>
+    </div>
+    <div id="shopGrid" class="shop-grid"></div>
+    <button class="btn" id="shopClose">ZAMKNIJ</button>
+  </div>
+
+  <!-- MISSIONS -->
+  <div id="missions" class="screen panel hidden">
+    <div class="panel-head">
+      <h2>ZADANIA DNIA</h2>
+      <div class="coin-badge"><b id="missCoins">0</b> monet</div>
+    </div>
+    <div id="missionList" class="mission-list"></div>
+    <p class="hint" id="missionReset"></p>
+    <button class="btn" id="missionsClose">ZAMKNIJ</button>
+  </div>
+
+  <!-- STATS -->
+  <div id="stats" class="screen panel hidden">
+    <div class="panel-head"><h2>STATYSTYKI</h2></div>
+    <div id="statList" class="stat-list"></div>
+    <button class="btn ghost danger" id="resetBtn">RESETUJ POSTĘP</button>
+    <button class="btn" id="statsClose">ZAMKNIJ</button>
+  </div>
+
+  <!-- HOW TO -->
+  <div id="how" class="screen panel hidden">
+    <div class="panel-head"><h2>JAK GRAĆ</h2></div>
+    <ul class="how-list">
+      <li><b>SPACJA</b>, klik myszką lub dotyk — przełącz grawitację (góra / dół).</li>
+      <li>Omijaj kolce, bloki i lasery. Jedno zderzenie kończy bieg.</li>
+      <li>Zbieraj <b>orby</b> — dają wynik i monety.</li>
+      <li><b>Muśnięcie</b> przeszkody o włos podbija <b>combo</b> — im wyższe, tym większy mnożnik punktów.</li>
+      <li>Combo wygasa, gdy zbyt długo nie ryzykujesz. Graj blisko!</li>
+      <li>Zbieraj bonusy: <span class="pw pw-shield">TARCZA</span> <span class="pw pw-magnet">MAGNES</span> <span class="pw pw-slow">SLOW-MO</span> <span class="pw pw-x2">x2</span></li>
+      <li>Za monety kupisz skiny w sklepie. Zadania dnia dają dodatkowe monety.</li>
+    </ul>
+    <button class="btn" id="howClose">ZAMKNIJ</button>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
