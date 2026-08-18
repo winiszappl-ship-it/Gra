@@ -41,15 +41,38 @@ python3 -m http.server 8000
 ## Publikacja na GitHub Pages
 
 Repozytorium zawiera workflow `.github/workflows/pages.yml`, który wrzuca
-katalog główny na Pages przy każdym pushu do `main`.
+katalog główny na Pages przy pushu do `main` oraz do gałęzi
+`claude/game-github-pages-millions-nw6tqg`.
 
-1. **Settings → Pages → Build and deployment → Source: GitHub Actions**
-2. Push do `main` lub do gałęzi `claude/game-github-pages-millions-nw6tqg`
-   (obie są w triggerze), albo `Run workflow` ręcznie w zakładce Actions
-3. Strona ląduje pod `https://<użytkownik>.github.io/<repo>/`
+### Krok, którego nie da się zautomatyzować
+
+**Pages trzeba raz włączyć ręcznie w ustawieniach repozytorium:**
+
+> **Settings → Pages → Build and deployment → Source: `GitHub Actions`**
+
+Dopóki tego nie zrobisz, workflow pada na pierwszym kroku:
+
+```
+Get Pages site failed. ... Not Found
+Create Pages site failed. Error: Resource not accessible by integration
+```
+
+To nie jest błąd w kodzie ani w workflow. Token `GITHUB_TOKEN`, którym
+działa Actions, nie ma uprawnienia `administration: write`, więc nie może
+sam założyć witryny Pages — nawet z flagą `enablement: true`, która jest już
+ustawiona w workflow. Utworzyć ją może tylko właściciel repozytorium
+z poziomu ustawień.
+
+### Po włączeniu
+
+1. Uruchom workflow ponownie: **Actions → Deploy to GitHub Pages → Run workflow**
+   (albo zrób dowolny push)
+2. Strona ląduje pod `https://<użytkownik>.github.io/<repo>/`
+   — dla tego repo: `https://winiszappl-ship-it.github.io/Gra/`
 
 Alternatywnie, bez Actions: **Settings → Pages → Deploy from a branch →
-`main` / `(root)`**. Plik `.nojekyll` jest w repo, więc Jekyll nie zje żadnych plików.
+`main` / `(root)`** (ta ścieżka też wymaga wejścia w Settings → Pages).
+Plik `.nojekyll` jest w repo, więc Jekyll nie zje żadnych plików.
 
 ## Struktura
 
