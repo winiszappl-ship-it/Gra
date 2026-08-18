@@ -22,7 +22,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      # enablement: true włącza Pages przez API, jeśli nie były jeszcze włączone
+      # w ustawieniach repo — bez tego pierwszy przebieg pada na "Get Pages site failed".
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
